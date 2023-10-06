@@ -1,36 +1,68 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { baseUrl } from "../common";
 
-const Login = ({ onLogin }) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const handleLogin = () => {
-        // You can implement your authentication logic here
-        // For simplicity, we're just checking if username and password are not empty
-        if (username && password) {
-            onLogin(username);
-        } else {
-            alert('Please enter username and password.');
-        }
-    };
-    return (
-        <div>
-            <h2>Login</h2>
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button onClick={handleLogin}>Login</button>
+  const navigate = useNavigate();
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+
+    let formData = { email, password };
+
+    try {
+
+      const data = await axios.post(
+        `${baseUrl}/users/login`,
+        formData
+      );
+
+      localStorage.setItem("user", JSON.stringify(data.data.data));
+      localStorage.setItem("token", JSON.stringify(data.data.token));
+      navigate("/");
+    } catch (error) {
+      if (error.response.data) {
+        console.log(error.response.data.message);
+      } else {
+        console.log(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      navigate("/dashboard");
+    }
+  }, []);
+  return (
+    <div className="m-5">
+      <form onSubmit={handleLoginSubmit}>
+        <div className="form-group">
+          <label htmlFor="exampleInputEmail1">Email address</label>
+          <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" onChange={(e) => {
+            setEmail(e.target.value);
+          }} />
         </div>
-    )
-}
+        <br />
+        <div className="form-group">
+          <label htmlFor="exampleInputPassword1">Password</label>
+          <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" onChange={(e) => {
+            setPassword(e.target.value);
+          }} />
+        </div>
+        <br />
+        <button type="submit" className="btn btn-primary">Submit</button>
+      </form>
+      Not a member ! Register <Link to="/register" >Here</Link>
+    </div>
+  );
+};
 
-export default Login
+export default Login;
+
+

@@ -1,86 +1,21 @@
-// import logo from './logo.svg';
-// import React, { useState } from 'react';
-// // import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
-// import './App.css';
-
-// import LoginForm from './components/Login';
-// import LogoutButton from './components/Logout';
-// // import Dashboard from './Dashboard';
-
-// function App() {
-//   const [user, setUser] = useState(null);
-
-//   const handleLogin = (username) => {
-//     setUser(username);
-//   };
-
-//   const handleLogout = () => {
-//     setUser(null);
-//   };
-
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         {user ? (
-//           <div>
-//             <p>Welcome, {user}!</p>
-//             <LogoutButton onLogout={handleLogout} />
-//           </div>
-//         ) : (
-//           <LoginForm onLogin={handleLogin} />
-//         )}
-//       </header>
-//     </div>
-
-//   );
-// }
-
-// export default App;
-
-
-
-import React, { useState } from 'react';
-import './App.css';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Update the import
-
-import LoginForm from './components/Login';
-import LogoutButton from './components/Logout';
-import Dashboard from './components/Dashboard';
+import "./App.css";
+import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import React from "react";
+import Auth from "./components/Auth";
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  const handleLogin = (username) => {
-    setUser(username);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-  };
-
   return (
-    <Router>
-      <div className="App">
-        <header className="App-header">
-          {user ? (
-            <div>
-              <p>Welcome, {user}!</p>
-              <LogoutButton onLogout={handleLogout} />
-            </div>
-          ) : (
-            <LoginForm onLogin={handleLogin} />
-          )}
-        </header>
-      </div>
+    <div className="App">
       <Routes>
-        <Route
-          path="/"
-          element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}
-        />
+        <Route path="/" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
-    </Router>
+    </div>
   );
 }
 
